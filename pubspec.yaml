@@ -1,0 +1,39 @@
+name: blue_serial_lib
+description: "A new Flutter project."
+version: 0.0.1
+homepage:
+
+environment:
+  sdk: ^3.12.2
+  flutter: '>=3.3.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_web_plugins:
+    sdk: flutter
+  web: ^1.0.0
+  plugin_platform_interface: ^2.0.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  pigeon: ^22.7.4
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: com.ysfgrl.blue_serial_lib
+        pluginClass: BlueSerialLibPlugin
+      ios:
+        pluginClass: BlueSerialLibPlugin
+      linux:
+        pluginClass: BlueSerialLibPlugin
+      macos:
+        pluginClass: BlueSerialLibPlugin
+      windows:
+        pluginClass: BlueSerialLibPluginCApi
+      web:
+        pluginClass: BlueSerialLibWeb
+        fileName: blue_serial_lib_web.dart

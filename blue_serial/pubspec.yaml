@@ -1,0 +1,62 @@
+name: blue_serial
+description: "A new Flutter project."
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.12.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  blue_serial_lib:
+    path: ../
+  shared_preferences: ^2.5.6
+  xterm: ^4.0.0
+  flutter_localizations:
+    sdk: flutter
+  flutter_bloc: ^9.1.1
+  equatable: ^2.1.0
+  go_router: ^18.1.1
+  easy_localization: ^3.0.8
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.4
+  image: ^4.12.0
+  shared_preferences_platform_interface: ^2.4.2
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: assets/iconcon.png
+  remove_alpha_ios: true
+  web:
+    generate: true
+    image_path: assets/iconcon.png
+    background_color: '#08162d'
+    theme_color: '#08162d'
+  macos:
+    generate: true
+    image_path: assets/iconcon.png
+
+flutter:
+
+  uses-material-design: true
+  assets:
+    - assets/translations/
+    - assets/fonts/ubuntu_mono/LICENSE.txt
+  fonts:
+    - family: UbuntuMono
+      fonts:
+        - asset: assets/fonts/ubuntu_mono/UbuntuMono-R.ttf
+        - asset: assets/fonts/ubuntu_mono/UbuntuMono-B.ttf
+          weight: 700
+        - asset: assets/fonts/ubuntu_mono/UbuntuMono-RI.ttf
+          style: italic
+        - asset: assets/fonts/ubuntu_mono/UbuntuMono-BI.ttf
+          weight: 700
+          style: italic
