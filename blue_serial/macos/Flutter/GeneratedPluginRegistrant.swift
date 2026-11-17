@@ -6,9 +6,11 @@ import FlutterMacOS
 import Foundation
 
 import blue_serial_lib
+import file_saver
 import shared_preferences_foundation
 
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   BlueSerialLibPlugin.register(with: registry.registrar(forPlugin: "BlueSerialLibPlugin"))
+  FileSaverPlugin.register(with: registry.registrar(forPlugin: "FileSaverPlugin"))
   SharedPreferencesPlugin.register(with: registry.registrar(forPlugin: "SharedPreferencesPlugin"))
 }

@@ -54,6 +54,7 @@ class PortSelectionWidget extends StatelessWidget {
                 key: ValueKey('port-$selectedPort'),
                 initialValue: selectedPort,
                 isExpanded: true,
+                menuMaxHeight: 320,
                 decoration: _controlDecoration(context.tr('global.port'))
                     .copyWith(
                       suffixIcon: onRequestPort == null

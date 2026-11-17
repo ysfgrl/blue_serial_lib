@@ -38,6 +38,7 @@ class _TrafficPanelState extends State<TrafficPanel> {
   bool _autoScroll = true;
   _TrafficDisplayMode _displayMode = _TrafficDisplayMode.ascii;
   bool _scrollScheduled = false;
+  bool _isDownloading = false;
 
   @override
   void initState() {
@@ -79,6 +80,42 @@ class _TrafficPanelState extends State<TrafficPanel> {
     setState(() => _displayMode = mode);
     if (_autoScroll) _scrollToEnd();
   }
+
+  Future<void> _downloadLogs() async {
+    if (_isDownloading || widget.records.isEmpty) return;
+    setState(() => _isDownloading = true);
+    try {
+      final path = await TrafficLogExport.save(
+        widget.records,
+        droppedRecords: widget.droppedRecords,
+      );
+      if (mounted && path != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.tr('serial.logsDownloaded'))),
+        );
+      }
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.tr('serial.logDownloadFailed'))),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isDownloading = false);
+    }
+  }
+
+  Widget _downloadButton() => IconButton(
+    key: const Key('traffic-download'),
+    tooltip: context.tr('serial.downloadLogs'),
+    onPressed: widget.records.isEmpty || _isDownloading ? null : _downloadLogs,
+    icon: _isDownloading
+        ? const SizedBox.square(
+            dimension: 20,
+            child: CircularProgressIndicator(strokeWidth: 2),
+          )
+        : const Icon(Icons.download_rounded, size: 20),
+  );
 
   @override
   void dispose() {
@@ -173,6 +210,7 @@ class _TrafficPanelState extends State<TrafficPanel> {
                               size: 20,
                             ),
                           ),
+                          _downloadButton(),
                         ],
                       ),
               ),
@@ -350,9 +388,9 @@ class _TrafficPanelState extends State<TrafficPanel> {
           setState(() => _autoScroll = !_autoScroll);
           if (_autoScroll) _scrollToEnd();
         },
-        icon: const Icon(Icons.vertical_align_bottom_rounded),
+        icon: const Icon(Icons.sync_rounded),
         selectedIcon: const Icon(
-          Icons.vertical_align_bottom_rounded,
+          Icons.sync_rounded,
           color: _rxColor,
         ),
       ),
@@ -361,6 +399,7 @@ class _TrafficPanelState extends State<TrafficPanel> {
         onPressed: widget.onClear,
         icon: const Icon(Icons.delete_outline_rounded, size: 20),
       ),
+      _downloadButton(),
     ],
   );
 
@@ -413,7 +452,7 @@ class _TrafficRow extends StatelessWidget {
                         rx ? 'serial.rxMetadata' : 'serial.txMetadata',
                         namedArgs: {'count': record.bytes.length.toString()},
                       ),
-                      style: _mono.copyWith(color: color, fontSize: 12),
+                      style: _mono.copyWith(color: color, fontSize: 11),
                     ),
                   ],
                 ),
@@ -461,12 +500,15 @@ class _TrafficRow extends StatelessWidget {
     String value,
     String Function() clipboardText,
   ) => Row(
-    crossAxisAlignment: CrossAxisAlignment.start,
+    crossAxisAlignment: CrossAxisAlignment.center,
     children: [
       IconButton(
         key: ValueKey('copy-${label.toLowerCase()}'),
-        constraints: BoxConstraints(maxWidth: 21, maxHeight: 21),
-        padding: EdgeInsets.all(0),
+        constraints: const BoxConstraints.tightFor(width: 21, height: 21),
+        padding: EdgeInsets.zero,
+        style: IconButton.styleFrom(
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        ),
         tooltip: context.tr('global.copyLabel', namedArgs: {'label': label}),
         onPressed: () => _copy(context, label, clipboardText()),
         icon: const Icon(Icons.content_copy_rounded, size: 18),

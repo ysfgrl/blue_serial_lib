@@ -4,6 +4,7 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   blue_serial_lib
+  file_saver
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST

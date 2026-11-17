@@ -12,6 +12,7 @@ import 'package:go_router/go_router.dart';
 
 import '../helper/command_card.dart';
 import '../helper/serial.dart';
+import '../helper/traffic_log_export.dart';
 import '../store/serial.dart';
 import '../models/serial_command.dart';
 import '../models/input_mode.dart';
@@ -45,7 +46,7 @@ class _SerialMonitorState extends State<SerialMonitor> {
     monitor.add(event);
     return event.result;
   }
- 
+
   Widget _portControls(
     SerialState state,
     SerialBloc monitor, {
@@ -83,51 +84,54 @@ class _SerialMonitorState extends State<SerialMonitor> {
               !previous.isConnected && current.isConnected,
           listener: (_, _) => Navigator.of(sheetContext).pop(),
           builder: (context, state) => StatefulBuilder(
-            builder: (context, updateSheet) => SingleChildScrollView(
-              key: const Key('connection-settings-sheet'),
-              padding: EdgeInsets.fromLTRB(
-                16,
-                0,
-                16,
-                24 + MediaQuery.viewInsetsOf(context).bottom,
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          context.tr('serial.connectionSettings'),
-                          style: Theme.of(context).textTheme.titleLarge,
+            builder: (context, updateSheet) => SafeArea(
+              top: false,
+              child: SingleChildScrollView(
+                key: const Key('connection-settings-sheet'),
+                padding: EdgeInsets.fromLTRB(
+                  16,
+                  0,
+                  16,
+                  24 + MediaQuery.viewInsetsOf(context).bottom,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            context.tr('serial.connectionSettings'),
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
                         ),
-                      ),
-                      IconButton(
-                        tooltip: context.tr('global.close'),
-                        onPressed: () => Navigator.of(sheetContext).pop(),
-                        icon: const Icon(Icons.close_rounded),
+                        IconButton(
+                          tooltip: context.tr('global.close'),
+                          onPressed: () => Navigator.of(sheetContext).pop(),
+                          icon: const Icon(Icons.close_rounded),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    _portControls(
+                      state,
+                      monitor,
+                      onBaudRateChanged: (value) {
+                        setState(() => _baudRate = value);
+                        updateSheet(() {});
+                      },
+                    ),
+                    if (state.error != null) ...[
+                      const SizedBox(height: 12),
+                      _errorBanner(
+                        context,
+                        state.error!,
+                        () => monitor.add(const SerialErrorDismissed()),
                       ),
                     ],
-                  ),
-                  const SizedBox(height: 16),
-                  _portControls(
-                    state,
-                    monitor,
-                    onBaudRateChanged: (value) {
-                      setState(() => _baudRate = value);
-                      updateSheet(() {});
-                    },
-                  ),
-                  if (state.error != null) ...[
-                    const SizedBox(height: 12),
-                    _errorBanner(
-                      context,
-                      state.error!,
-                      () => monitor.add(const SerialErrorDismissed()),
-                    ),
                   ],
-                ],
+                ),
               ),
             ),
           ),

@@ -77,6 +77,7 @@ class SerialBloc extends Bloc<SerialEvent, SerialState> {
   static const maxRecords = 5000;
   static const maxHistoryBytes = 1024 * 1024;
   static const _maxRecordBytes = 4096;
+  static const _maxRxRecordBytes = 128;
 
   final _serial = BlueSerialLib();
   final _incomingBytes = StreamController<Uint8List>.broadcast(sync: true);
@@ -94,6 +95,7 @@ class SerialBloc extends Bloc<SerialEvent, SerialState> {
   bool _portFailed = false;
   bool _closing = false;
   bool _requestingPort = false;
+  bool _continueRxRecord = false;
   int _lastRxLogAt = 0;
 
   bool get _inactive => _closing || isClosed;
@@ -317,6 +319,7 @@ class SerialBloc extends Bloc<SerialEvent, SerialState> {
   }
 
   Future<void> _connectPort(String path, int baudRate) async {
+    _continueRxRecord = false;
     _path = path;
     _openingError = null;
     _portFailed = false;
@@ -526,6 +529,7 @@ class SerialBloc extends Bloc<SerialEvent, SerialState> {
 
   void _onClearHistory(SerialHistoryCleared event, Emitter<SerialState> emit) {
     _records.clear();
+    _continueRxRecord = false;
     _emitState(
       emit,
       state.copyWith(
@@ -546,13 +550,22 @@ class SerialBloc extends Bloc<SerialEvent, SerialState> {
     if (_inactive || bytes.isEmpty) return;
     var historyBytes = state.historyBytes;
     var droppedRecords = state.droppedRecords;
-    final timestamp = DateTime.now();
-    for (var offset = 0; offset < bytes.length; offset += _maxRecordBytes) {
-      final chunk = Uint8List.sublistView(
-        bytes,
-        offset,
-        min(offset + _maxRecordBytes, bytes.length),
-      );
+    var timestamp = DateTime.now();
+    var data = bytes;
+    if (direction == TrafficDirection.rx &&
+        _continueRxRecord &&
+        _records.isNotEmpty &&
+        _records.last.direction == TrafficDirection.rx) {
+      final previous = _records.last;
+      // A CR is already a line ending; only a following LF belongs to it.
+      if (previous.bytes.last != 13 || bytes.first == 10) {
+        _records.removeLast();
+        historyBytes -= previous.bytes.length;
+        timestamp = previous.timestamp;
+        data = Uint8List.fromList([...previous.bytes, ...bytes]);
+      }
+    }
+    for (final chunk in _recordChunks(direction, data)) {
       _records.add(TrafficRecord(direction, chunk, timestamp));
       historyBytes += chunk.length;
       while (_records.length > maxRecords || historyBytes > maxHistoryBytes) {
@@ -560,6 +573,11 @@ class SerialBloc extends Bloc<SerialEvent, SerialState> {
         droppedRecords++;
       }
     }
+    final last = _records.last.bytes;
+    _continueRxRecord =
+        direction == TrafficDirection.rx &&
+        (last.last == 13 ||
+            (last.last != 10 && last.length < _maxRxRecordBytes));
     _emitState(
       emit,
       state.copyWith(
@@ -574,6 +592,36 @@ class SerialBloc extends Bloc<SerialEvent, SerialState> {
             (direction == TrafficDirection.tx ? bytes.length : 0),
       ),
     );
+  }
+
+  Iterable<Uint8List> _recordChunks(
+    TrafficDirection direction,
+    Uint8List bytes,
+  ) sync* {
+    var offset = 0;
+    while (offset < bytes.length) {
+      var end = min(
+        offset +
+            (direction == TrafficDirection.rx
+                ? _maxRxRecordBytes
+                : _maxRecordBytes),
+        bytes.length,
+      );
+      if (direction == TrafficDirection.rx) {
+        for (var i = offset; i < end; i++) {
+          if (bytes[i] == 13 || bytes[i] == 10) {
+            end = i + 1;
+            // Keep CRLF together, including at a 20-byte boundary.
+            if (bytes[i] == 13 && end < bytes.length && bytes[end] == 10) {
+              end++;
+            }
+            break;
+          }
+        }
+      }
+      yield Uint8List.sublistView(bytes, offset, end);
+      offset = end;
+    }
   }
 
   @override
