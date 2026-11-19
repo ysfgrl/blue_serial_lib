@@ -193,6 +193,10 @@ Hata bildirimleri, arayüz önerileri ve yeni platform uygulamaları için katk�
 - [Pull request gönderin](https://github.com/ysfgrl/blue_serial_lib/pulls): Değişikliğin amacını ve hangi platformda denediğinizi açıklayın.
 - Projeyi faydalı bulduysanız GitHub'da yıldız vererek destek olabilirsiniz.
 
+## Gizlilik
+
+Google Play ve App Store sürümleri için Türkçe ve İngilizce [Gizlilik Politikası](PRIVACY_POLICY.md) mevcuttur. Politika; seri cihaz erişimini, yerel kayıtları, günlük dışa aktarmayı ve verilerin silinmesini açıklar. Mağaza gizlilik alanlarını doldurmak ve politika adresini yayımlamak için [Mağaza gizlilik beyanları](docs/store-privacy.md) belgesine bakın.
+
 ## Lisans
 
 Bu proje **[MIT Lisansı](LICENSE)** ile açık kaynak olarak sunulur. Lisans koşullarını ve telif bildirimini koruyarak kullanabilir, değiştirebilir ve paylaşabilirsiniz. Kullanılan üçüncü taraf bileşenler kendi lisanslarına tabidir; Ubuntu Mono yazı tipinin lisansı [burada](blue_serial/assets/fonts/ubuntu_mono/LICENSE.txt) yer alır.
