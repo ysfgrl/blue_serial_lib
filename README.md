@@ -146,6 +146,10 @@ flutter run -d CIHAZ_KIMLIGI
 
 Komutları `blue_serial/` dizininden çalıştırın. `CIHAZ_KIMLIGI` yerine `flutter devices` çıktısındaki Android cihaz kimliğini yazın. Android cihazın USB hata ayıklaması etkin olmalıdır; gerçek USB seri haberleşmesi için USB Host destekli fiziksel cihaz kullanın. Yerel eklenti kodu değişikliklerinin yüklenmesi için uygulamayı tamamen durdurup yeniden başlatın.
 
+## Linux mağaza yayını
+
+Ubuntu Uygulama Merkezi için Snap Store paketleme tanımı ve elle başlatılabilen GitHub Actions derlemesi mevcuttur. Paket oluşturma, USB seri erişim izinleri ve mağazaya yükleme adımları için [Linux mağaza yayını](docs/linux-store.md) belgesine bakın.
+
 ## Sık karşılaşılan durumlar
 
 | Durum | Kontrol edin |

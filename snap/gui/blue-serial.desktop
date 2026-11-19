@@ -1,0 +1,15 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Blue Serial
+GenericName=Serial terminal
+GenericName[tr]=Seri terminal
+Comment=Communicate with USB serial devices using ASCII and HEX
+Comment[tr]=USB seri cihazlarla ASCII ve HEX biçiminde iletişim kurun
+Exec=blue-serial
+Icon=${SNAP}/meta/gui/blue-serial.png
+Terminal=false
+Categories=Development;Electronics;
+Keywords=serial;terminal;USB;UART;ASCII;HEX;
+StartupNotify=true
+StartupWMClass=com.ysfgrl.blue_serial
