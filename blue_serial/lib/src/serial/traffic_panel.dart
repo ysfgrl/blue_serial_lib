@@ -242,7 +242,13 @@ class _TrafficPanelState extends State<TrafficPanel> {
                               widget.isConnected
                                   ? context.tr('serial.incomingOutgoingHint')
                                   : !widget.hasPorts
-                                  ? context.tr('serial.connectDeviceHint')
+                                  ? context.tr(
+                                      !kIsWeb &&
+                                              defaultTargetPlatform ==
+                                                  TargetPlatform.iOS
+                                          ? 'serial.iosSerialUnsupported'
+                                          : 'serial.connectDeviceHint',
+                                    )
                                   : context.tr('serial.selectPortHint'),
                               textAlign: TextAlign.center,
                               style: const TextStyle(

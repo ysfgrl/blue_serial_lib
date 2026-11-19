@@ -637,6 +637,9 @@ class SerialBloc extends Bloc<SerialEvent, SerialState> {
     }
     if (error is PlatformException) {
       final message = error.message ?? error.code;
+      if (error.code == 'ios-serial-unsupported') {
+        return 'serial.iosSerialUnsupported'.tr();
+      }
       if (error.code == 'insecure-context') {
         return 'serial.webSecureContextRequired'.tr();
       }

@@ -127,6 +127,7 @@
     "logDownloadFailed": "Could not save the log file. Try again.",
     "waitingForData": "Waiting for data",
     "incomingOutgoingHint": "Received and sent bytes will appear here.",
+    "iosSerialUnsupported": "Generic USB serial adapters are not supported on iOS. MFi and BLE serial connections are not yet implemented in this app. The simulator cannot access the Mac’s serial ports.",
     "connectDeviceHint": "Connect your device and refresh the port list.",
     "selectPortHint": "Select the port and baud rate, then connect.",
     "recordCount": "{count} records",

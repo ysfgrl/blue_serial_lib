@@ -53,7 +53,7 @@ Aşağıdaki tablo depodaki mevcut seri port uygulamalarını gösterir. Bir pla
 | **macOS** | Uygulandı | IOKit ile bulunan `/dev/cu.*` seri portları; erişim, sürücü ve uygulama izinlerine bağlıdır. |
 | **Web** | Koşullu | Web Serial API sunan tarayıcı, HTTPS veya localhost ve kullanıcı tarafından verilmiş cihaz erişim izni gerekir. |
 | **Windows** | Henüz uygulanmadı | Eklenti iskeleti ve üretilmiş bağlayıcılar mevcut; seri port işlemleri hazır değil. |
-| **iOS** | Henüz uygulanmadı | Eklenti iskeleti ve üretilmiş bağlayıcılar mevcut; seri port işlemleri hazır değil. |
+| **iOS** | Seri aktarım henüz uygulanmadı | API ve olay kanalları kayıtlıdır; port listesi boştur. Genel USB–seri adaptör desteği yoktur; MFi/BLE için cihaza özel bağlantı uygulaması gerekir. Simülatör Mac’in seri portlarını kullanamaz. |
 
 Android tarafında cihaz tanıma ve USB seri haberleşmesi `usb-serial-for-android` sürücüsü üzerinden sağlanır. Görünen cihazlar bu sürücünün desteklediği seri arayüzlerle sınırlıdır. Web desteği de her tarayıcıda veya her mobil cihazda bulunmaz.
 
@@ -177,7 +177,7 @@ blue_serial_lib/
 ├── android/            # Android USB seri uygulaması
 ├── linux/              # Linux seri port uygulaması
 ├── macos/              # macOS seri port uygulaması
-├── ios/                # iOS iskeleti; seri port desteği henüz yok
+├── ios/                # iOS API kaydı; seri aktarım henüz yok
 ├── windows/            # Windows iskeleti; seri port desteği henüz yok
 ├── pigeon/             # Platform API tanımları
 └── docs/               # Teknik belgeler

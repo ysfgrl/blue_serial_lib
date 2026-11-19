@@ -7,8 +7,8 @@ connection management, binary writes, and read/connection event channels using
 POSIX serial I/O. Android implements USB host serial discovery, permission
 requests, connection management, binary writes, and both event streams. macOS
 implements IOKit port discovery and POSIX serial I/O through the generated
-Pigeon API. iOS and Windows native backends remain unimplemented; their
-bindings are generated.
+Pigeon API. iOS registers the API and event channels but has no serial
+transport; Windows native serial support remains unimplemented.
 Web is implemented using the browser's Web Serial API and the same public Dart
 models and streams, without native Pigeon channels.
 
@@ -228,15 +228,51 @@ Device removal closes the port and emits a disconnected event with an error.
 Baud rates are applied through `IOSSIOSPEED`; support depends on the device
 driver. Data bits 5–8, one/two stop bits, none/odd/even parity, and none/RTS-CTS/
 XON-XOFF flow control are supported. Unsupported settings return an error.
-App Sandbox must be disabled in the consuming app for local shell access;
-serial device access is also subject to the consuming app's permissions.
-After changing native code, stop the app completely and run it again.
+Sandboxed consuming apps must enable serial device access in both
+`macos/Runner/DebugProfile.entitlements` (Debug/Profile) and
+`macos/Runner/Release.entitlements` (Release):
+
+```xml
+<key>com.apple.security.device.serial</key>
+<true/>
+```
+
+The bundled `blue_serial` app includes this entitlement. Without it, ports can
+still be listed, but opening them can fail with `Operation not permitted`.
+See Apple's [App Sandbox entitlement reference](https://developer.apple.com/library/archive/documentation/Miscellaneous/Reference/EntitlementKeyReference/Chapters/EnablingAppSandbox.html).
+App Sandbox must be disabled in the consuming app for local shell access.
+After changing native code or entitlements, stop the app completely, rebuild,
+and run it again; hot reload and hot restart do not update signed entitlements.
+
+## iOS
+
+The plugin registers every Pigeon host method and both event channels. Port
+lists are empty, disconnect is idempotent, and connect/write return
+`ios-serial-unsupported`. Listening to either event stream is supported, but no
+serial events are produced without a transport backend. The app displays this
+limitation in Turkish and English rather than a missing-channel error.
+
+Desktop-style `/dev/cu.*` access is not an iOS transport. The simulator also
+does not forward the Mac's serial ports. Generic CH340/CP210x/FTDI USB adapters
+cannot be supported simply by adding a permission key.
+
+A future MFi transport must use Apple's
+[External Accessory framework](https://developer.apple.com/documentation/externalaccessory/)
+and the manufacturer's protocol specification. The app must declare the real
+protocol names in
+[`UISupportedExternalAccessoryProtocols`](https://developer.apple.com/documentation/bundleresources/information-property-list/uisupportedexternalaccessoryprotocols).
+BLE serial requires a separate Core Bluetooth backend and the device's GATT
+service/characteristic definitions; BLE serial is not a universal protocol.
+No placeholder accessory protocols or unused Bluetooth permissions are declared.
+
+Stop and rebuild the app after changing the native plugin. Hot reload and hot
+restart cannot register new native channels.
 
 ## Native backend contract
 
-The other native plugins were reviewed: iOS and Windows still
-contain the original platform-version scaffolding. They do not enumerate ports
-yet; generated Pigeon bindings alone do not implement device discovery.
+Windows still contains the original platform-version scaffolding. The iOS
+API reports its transport limitation explicitly. Neither enumerates serial
+devices yet; generated bindings alone do not implement device discovery.
 
 For additional platforms, implement `BlueSerialLibApi` and register both stream handlers.
 Do blocking I/O off the UI thread. Open ports for reading and writing, apply all

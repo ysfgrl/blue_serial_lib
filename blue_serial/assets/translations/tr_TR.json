@@ -127,6 +127,7 @@
     "logDownloadFailed": "Log dosyası kaydedilemedi. Yeniden deneyin.",
     "waitingForData": "Veri bekleniyor",
     "incomingOutgoingHint": "Gelen ve gönderilen baytlar burada görünecek.",
+    "iosSerialUnsupported": "iOS’ta genel USB–seri adaptörler desteklenmiyor. Bu uygulamada MFi veya BLE seri bağlantısı henüz uygulanmadı. Simülatör, Mac’in seri portlarına erişemez.",
     "connectDeviceHint": "Cihazınızı takın ve port listesini yenileyin.",
     "selectPortHint": "Portu ve baud hızını seçip bağlantıyı başlatın.",
     "recordCount": "{count} kayıt",
