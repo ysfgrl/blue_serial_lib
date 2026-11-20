@@ -11,17 +11,22 @@ jobs:
     runs-on: ubuntu-22.04
     timeout-minutes: 60
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node.js 24
         with:
           persist-credentials: false
-      - name: Build Snap package
-        uses: canonical/action-build@3bdaa03e1ba6bf59a65f84a751d943d549a54e79 # v1
-        id: snapcraft
+      - name: Install Snapcraft
+        run: sudo snap install snapcraft --classic --channel=latest/stable
+      - name: Set up LXD
+        uses: canonical/setup-lxd@8c6a87bfb56aa48f3fb9b830baa18562d8bfd4ee # v1, composite action
         with:
-          snapcraft-channel: latest/stable
+          channel: latest/stable
+      - name: Build Snap package
+        env:
+          SNAPCRAFT_BUILD_INFO: "1"
+        run: snapcraft --use-lxd
       - name: Save installable package
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2, Node.js 24
         with:
           name: blue-serial-linux-amd64-snap
-          path: ${{ steps.snapcraft.outputs.snap }}
+          path: blue-serial_*.snap
           if-no-files-found: error

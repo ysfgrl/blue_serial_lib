@@ -18,7 +18,7 @@ Snapcraft depo kökünden çalıştırılır. Uygulama `blue_serial/` altındad�
 3. Başarılı çalışmanın **Artifacts** bölümünden `blue-serial-linux-amd64-snap` arşivini indirin.
 4. Arşivden çıkan `.snap` dosyasını test cihazına kopyalayın.
 
-Derleme iş akışı Snap Store hesabı veya mağaza anahtarı istemez; çıktıyı artifact olarak saklar. Mağaza yüklemesi aşağıdaki yayımlama adımında yapılır. Kullanılan Canonical eylemi Snapcraft ve LXD ortamını hazırlar. [Canonical Snapcraft Build Action](https://github.com/canonical/action-build).
+Derleme iş akışı Snap Store hesabı veya mağaza anahtarı istemez; çıktıyı artifact olarak saklar. Mağaza yüklemesi aşağıdaki yayımlama adımında yapılır. Snapcraft komut satırından kurulur, LXD ortamı [Canonical Setup LXD](https://github.com/canonical/setup-lxd) eylemiyle hazırlanır. Derleme `snapcraft --use-lxd` komutuyla yapılır; JavaScript tabanlı checkout ve artifact yükleme adımları Node.js 24 kullanan sürümlere sabitlenmiştir.
 
 ## Yerelde paket oluşturma
 
@@ -77,4 +77,4 @@ Flathub için ayrı bir Flatpak manifesti, AppStream metadata, uygun uygulama ki
 
 Linux `x64` release derlemesi, masaüstü dosyalarının biçim kontrolü ve paylaşılan kütüphane denetimi tamamlanmıştır. Uygulama geçici ayar dizinleriyle yapılan sekiz saniyelik açılış kontrolünde çalışmaya devam etmiştir. Bu ortamda açılış sırasında XDG portal ayarı ve `FlValue` uyarıları gözlenmiştir; gerçek cihazla işlev testi ayrıca yapılmalıdır.
 
-Snapcraft bu geliştirme ortamında kurulu olmadığından `.snap` derlemesi, paket içindeki gerçek USB erişimi ve mağazaya yükleme henüz doğrulanmamıştır. GitHub Actions iş akışı da ilk uzak çalışmasını beklemektedir.
+Snapcraft bu geliştirme ortamında kurulu olmadığından yerelde `.snap` derlemesi yapılmamıştır. Paket içindeki gerçek USB erişimi ayrıca doğrulanmalıdır. Node.js 24 için güncellenen GitHub Actions iş akışının uzak çalışması henüz doğrulanmamıştır.
