@@ -11,7 +11,17 @@ Bu depoda Ubuntu Uygulama Merkezi için Snap Store paketlemesi hazırlanmıştı
 
 Snapcraft depo kökünden çalıştırılır. Uygulama `blue_serial/` altındadır; `blue_serial_lib` bağımlılığı `../` yolunu kullandığından derleme kaynağı tüm depoyu içerir. Yalnızca uygulama klasörünü göndermeyin.
 
-## GitHub üzerinden paket oluşturma
+## Snap Store GitHub bağlantısıyla paket oluşturma
+
+Snap Store'da **Builds** sayfasından `ysfgrl/blue_serial_lib` deposu bağlandığında, **Trigger new build** ile mağazanın derleme hizmeti kullanılabilir. Hizmet depo kökündeki `snap/snapcraft.yaml` tanımını kullanır; GitHub Actions iş akışını çalıştırmaz. Başarılı derlemeler mağazaya revizyon olarak gönderilebilir ve yayın/inceleme durumları **Releases** bölümünden takip edilir. [Snapcraft uzaktan derleme seçenekleri](https://snapcraft.io/about/publish).
+
+Paket tanımı `amd64` ve `arm64` için ayrı yerel derlemeler ister. Flutter'ın Linux hedefleri x64 ve ARM64 olduğundan `armhf`, `riscv64`, `ppc64el` ve `s390x` derlemeleri istenmez. [Flutter desteklenen platformlar](https://docs.flutter.dev/reference/supported-platforms).
+
+Bu hizmet Linux `.snap` paketleri üretir. Android, iOS, Windows, macOS, AppImage veya `.deb` çıktıları için ayrı derleme işleri gerekir. `Cancelled` durumu, ilgili işin iptal edildiğini gösterir; iptal nedenini öğrenmek için derleme kaydının ayrıntılarını inceleyin.
+
+Mimari listesini değiştirdikten sonra dosyayı bağlı GitHub dalına gönderin ve **Trigger new build** ile yeni bir çalışma başlatın. `arm64` paketi gerçek ARM64 cihazda ayrıca test edilmelidir; derleme tanımının bulunması işlev testinin yerine geçmez.
+
+## GitHub Actions üzerinden paket oluşturma
 
 1. Paketleme dosyalarını GitHub deposuna gönderin.
 2. Deponun **Actions → Build Linux Snap → Run workflow** ekranından derlemeyi başlatın.

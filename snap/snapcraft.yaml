@@ -2,6 +2,13 @@
 name: blue-serial
 title: Blue Serial
 base: core22
+# Flutter Linux supports x64 and ARM64. Build each package natively;
+# the Snap Store build service must not schedule unsupported CPU targets.
+architectures:
+  - build-on: [amd64]
+    build-for: [amd64]
+  - build-on: [arm64]
+    build-for: [arm64]
 adopt-info: blue-serial
 summary: USB serial monitor and terminal with ASCII and HEX support
 description: |
